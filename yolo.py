@@ -99,9 +99,9 @@ class YOLO(object):
                 score_threshold=self.score, iou_threshold=self.iou)
         return boxes, scores, classes
 
-    def detect_image(self, image):
+    def detect_image(self, image, img):
         start = timer()
-
+        f = open('104/%s.txt' % (str(img).rstrip('.jpg')), 'w')
         if self.model_image_size != (None, None):
             assert self.model_image_size[0]%32 == 0, 'Multiples of 32 required'
             assert self.model_image_size[1]%32 == 0, 'Multiples of 32 required'
@@ -145,7 +145,8 @@ class YOLO(object):
             bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
             right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
             print(label, (left, top), (right, bottom))
-
+            f.write(label + ' ' + str(left) + ' ' + str(top) + ' ' + str(right) + ' ' + str(bottom))
+            f.write('\n')
             if top - label_size[1] >= 0:
                 text_origin = np.array([left, top - label_size[1]])
             else:
